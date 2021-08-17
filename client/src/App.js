@@ -1,9 +1,25 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import logo from './logo.svg';
 import { Counter } from './features/counter/Counter';
 import './App.css';
+import { testAPI } from './services/api.service';
 
 function App() {
+
+  useEffect(()=>{
+    testAPI()
+    .then(response=>response.data)
+    .then(response=>{
+      console.log(response);
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  },[])
+
+
+
+
   return (
     <div className="App">
       <header className="App-header">
