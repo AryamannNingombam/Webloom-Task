@@ -6,5 +6,7 @@ import {
 
 
 export const testAPI = () => {
-    return axios.get(`${BACKEND_API}/api/test/`)
+    return axios.post(`${BACKEND_API}/api/test/`, {
+        url: "kryptocards.tech"
+    })
 }
