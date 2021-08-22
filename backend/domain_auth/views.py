@@ -4,6 +4,8 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import login, logout, authenticate
 from .models import UserVerified
 from django.contrib.auth.models import User
+from .mailer import send_mail
+from .random_string import get_string
 # Create your views here.
 
 
@@ -55,15 +57,41 @@ def sign_up_user(req):
                    first_name=first_name,
                    last_name=last_name
                    )
+
     newUser.save()
+    rand_string = get_string()
+    verified = UserVerified(user=newUser, verified=False, verification_id=rand_string))
+    verified.save()
+    send_mail(email, 'https://localhost/api/auth/verify-mail/' + \
+              rand_string + '/')
+
     return JsonResponse({
         'success': True,
     })
 
 
-@api_view(['POST'])
+@ api_view(['POST'])
 def sign_out_user(req):
     logout(req.user)
+    return JsonResponse({
+        'success': True
+    })
+
+
+@ api_view(['GET'])
+def verify_mail(req):
+    _id=req.params.get('id')
+
+    check=UserVerified.objects.filter(verification_id = _id)
+    if (len(check) == 0):
+        return JsonResponse({
+            'success': False,
+            'message': "Invalid!"
+        })
+
+    ver=check[0]
+    ver.verified=True
+    ver.save()
     return JsonResponse({
         'success': True
     })
