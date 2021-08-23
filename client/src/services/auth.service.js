@@ -2,23 +2,30 @@ import axios from 'axios';
 import {
     BACKEND_API
 } from '../constants';
+import {
+    store
+} from '../app/store';
 
 
-export const onGoogleLogin = async (accessToken) => {
 
-    return axios.post(`${BACKEND_API}/api/auth/google/`, {
-        access_token: accessToken,
-        code:""
-    }, {
+export const CheckVerified = (email) => {
+    const token = store.getState().auth.token;
+    if (!token) {
+        throw new Error("Not authorized!");
+    }
+    console.log(token)
+    return axios.get(`${BACKEND_API}/api/auth/check-user-verified/${email}`, {
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            "Authorization": `JWT ${token}`
         }
     })
-
 }
 
-export const testLogin = async () => {
-    const result = await axios.get(`${BACKEND_API}/api/auth/test`);
-    console.log(result.data);
+
+export const SignIn = (body) => {
+    return axios.post(`${BACKEND_API}/api/auth/token/obtain/`, body, {
+        headers: {
+            'content-type': 'application/json'
+        }
+    })
 }

@@ -6,36 +6,21 @@ from .models import UserVerified
 from django.contrib.auth.models import User
 from .mailer import send_mail
 from .random_string import get_string
-# Create your views here.
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import MyCustomSerializer
+from rest_framework import permissions
 
 
+class ObtainTokenPairWithColorView(TokenObtainPairView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = MyCustomSerializer
+
+
+@api_view(['GET'])
 def test_api(req):
     return JsonResponse({
         'success': True,
         'domain_auth': True,
-    })
-
-
-@api_view(['POST'])
-def sign_in_user(req):
-    username = req.POST.get('username')
-    password = req.POST.get('password')
-    check = authenticate(username=username, password=password)
-
-    if not check:
-        return JsonResponse({
-            'success': False,
-            'message': "username or password wrong!"
-        })
-    check2 = UserVerified(user=check)
-    if not check2.verified:
-        return JsonResponse({
-            'success': False,
-            'message': "User not verified"
-        })
-
-    return JsonResponse({
-        'success': True,
     })
 
 
@@ -60,9 +45,10 @@ def sign_up_user(req):
 
     newUser.save()
     rand_string = get_string()
-    verified = UserVerified(user=newUser, verified=False, verification_id=rand_string))
+    verified = UserVerified(user=newUser, verified=False,
+                            verification_id=rand_string)
     verified.save()
-    send_mail(email, 'https://localhost/api/auth/verify-mail/' + \
+    send_mail(email, 'https://localhost/api/auth/verify-mail/' +
               rand_string + '/')
 
     return JsonResponse({
@@ -80,18 +66,28 @@ def sign_out_user(req):
 
 @ api_view(['GET'])
 def verify_mail(req):
-    _id=req.params.get('id')
+    _id = req.params.get('id')
 
-    check=UserVerified.objects.filter(verification_id = _id)
+    check = UserVerified.objects.filter(verification_id=_id)
     if (len(check) == 0):
         return JsonResponse({
             'success': False,
             'message': "Invalid!"
         })
 
-    ver=check[0]
-    ver.verified=True
+    ver = check[0]
+    ver.verified = True
     ver.save()
     return JsonResponse({
         'success': True
+    })
+
+
+@api_view(['GET'])
+def check_user_verified(req, email):
+    user_check = User.objects.get(email=email)
+    verified_check = UserVerified.objects.get(user=user_check)
+    return JsonResponse({
+        'success': False,
+        'verified': verified_check.verified
     })

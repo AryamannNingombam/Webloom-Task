@@ -1,0 +1,19 @@
+.auth-main-div {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .form-control-styling {
+    padding: 9px;
+    font-size: 1.4rem;
+    margin: 2rem;
+  }
+  .sign-in-button {
+    border-radius: 7px;
+    font-size:1.4rem;
+    
+  }
+}

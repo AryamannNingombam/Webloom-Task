@@ -1,34 +1,49 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Auth.scss'
-import GoogleLogin from 'react-google-login'
-import { onGoogleLogin, testLogin } from '../../services/auth.service'
+import { Button, FormControl } from 'react-bootstrap'
+import { SignInUser } from '../../features/auth/auth.slice'
+import { store } from '../../app/store'
 
 const Auth = () => {
-  const onGoogleSignIn = (response) => {
-      console.log(response);
-      console.log(response.accessToken);
-    onGoogleLogin(response.accessToken)
-      .then((response) => response.data)
-      .then((data) => {
-        console.log(data)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const onSignIn = (e) => {
+    e.preventDefault()
+    store
+      .dispatch(SignInUser({ username, password }))
+      .then((response) => {
+        console.log(response);
+        if (response.payload) {
+          alert('Signed in!')
+        } else {
+          alert('Wrong!')
+        }
       })
       .catch((err) => {
-        console.log('ERROR')
         console.log(err)
       })
-    
   }
 
   return (
-    <div>
-      <GoogleLogin
-        clientId="506436750340-5c8l6adi9j1dm41j82dm8tprt8647b79.apps.googleusercontent.com"
-        buttonText="LOGIN WITH GOOGLE"
-        onSuccess={onGoogleSignIn}
-        onFailure={onGoogleSignIn}
+    <div className="auth-main-div">
+      <FormControl
+        className="form-control-styling"
+        placeholder="Username"
+        onChange={(e) => {
+          setUsername(e.target.value)
+        }}
       />
+      <FormControl
+        className="form-control-styling"
+        placeholder="Password"
+        onChange={(e) => {
+          setPassword(e.target.value)
+        }}
+      />
+      <Button className="sign-in-button" onClick={onSignIn}>
+        Sign-In
+      </Button>
     </div>
   )
 }
-
 export default Auth
