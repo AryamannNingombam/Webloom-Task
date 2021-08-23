@@ -8,8 +8,9 @@ import {
 
 
 
-export const CheckVerified = (email) => {
-    const token = store.getState().auth.token;
+export const CheckVerified = (email,token) => {
+
+    console.log(token)
     if (!token) {
         throw new Error("Not authorized!");
     }
@@ -23,6 +24,7 @@ export const CheckVerified = (email) => {
 
 
 export const SignIn = (body) => {
+    console.log(body)
     return axios.post(`${BACKEND_API}/api/auth/token/obtain/`, body, {
         headers: {
             'content-type': 'application/json'

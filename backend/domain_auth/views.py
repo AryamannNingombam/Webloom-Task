@@ -84,8 +84,8 @@ def verify_mail(req):
 
 
 @api_view(['GET'])
-def check_user_verified(req, email):
-    user_check = User.objects.get(email=email)
+def check_user_verified(req, username):
+    user_check = User.objects.get(username=username)
     verified_check = UserVerified.objects.get(user=user_check)
     return JsonResponse({
         'success': False,

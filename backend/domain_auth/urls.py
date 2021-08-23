@@ -8,7 +8,7 @@ urlpatterns = [
     path('test/', views.test_api, name='test'),
     path('sign-up/', views.sign_up_user, name='sign_up_user'),
     path('sign-out/', views.sign_out_user, name='sign_out_user'),
-    path('check-user-verified/<str:email>',views.check_user_verified,name="check_user_verified"),
+    path('check-user-verified/<str:username>',views.check_user_verified,name="check_user_verified"),
     path('token/obtain/', jwt_views.TokenObtainPairView.as_view(),
          name='token_create'),  # override sjwt stock token
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),

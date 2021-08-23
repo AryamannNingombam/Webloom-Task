@@ -18,7 +18,11 @@ export const SignInUser = createAsyncThunk(
     'auth/SignInUser',
     async (body) => {
         const response = await SignIn(body);
-        const check = await CheckVerified(body.username);
+        console.log("RESPONSE");
+        console.log(response.data);
+        const check = await CheckVerified(body.username,response.data.access);
+        console.log("CHECK");
+        console.log(check.data);
         return {
             tokenData : response.data,
             check : check.data  
@@ -38,7 +42,8 @@ export const authSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(SignInUser.fulfilled, (state, action) => {
-                state.token = action.payload.tokenDatatoken;
+                console.log(action.payload);
+                state.token = action.payload.tokenData.access;
                 state.verified = action.payload.check.verified;
 
             })
