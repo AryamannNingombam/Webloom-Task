@@ -7,6 +7,21 @@ from .serializers import DomainSearchedSerializer
 import whois
 
 
+
+
+def add_user_to_domain_searched(name, user):
+    domain_searched = DomainSearched.objects.filter(name=name)
+    # the first time the domain has been searched for;
+    if (len(domain_searched) == 0):
+        new_domain_searched = DomainSearched(name=name)
+        new_domain_searched.save()
+        new_domain_searched.searchers.add(user)
+        new_domain_searched.save()
+    else:
+        domain_searched[0].searchers.add(user)
+        domain_searched[0].save()
+
+
 def get_all_domain_endings_list():
     result = []
     from_model = DomainEnding.objects.all()
@@ -74,17 +89,14 @@ def get_history_for_user(req):
 
 
 @api_view(['GET'])
-def filter_for_query(req):
-    text = req.GET.get('text')
+def filter_for_query(req, text):
     temp = text.split('.')[0]
-    first_result = whois.whois(text)
-    all_domain_suggestions = map(
-        lambda x:  temp+x, get_all_domain_endings_list())
-    final_result = [first_result]
-    for domain_suggestion in all_domain_suggestions:
-        final_result.append(whois.whois(domain_suggestion))
-
+    print(type(req.user))
+    # first_result = whois.whois(text)
+    suggestions = list(map(lambda x: temp + x, get_all_domain_endings_list()))
+    add_user_to_domain_searched(text,req.user)
     return JsonResponse({
         'success': True,
-        'all_suggestions': final_result
+        'all_suggestions': suggestions,
+        # 'result': first_result
     })

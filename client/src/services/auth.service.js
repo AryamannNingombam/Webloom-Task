@@ -7,6 +7,12 @@ import {
 } from '../app/store';
 
 
+export const checkIfSignedIn = ()=>{
+    const token = store.getState().auth.token;
+    return (token !== null)
+}
+
+
 
 export const CheckVerified = (email,token) => {
 

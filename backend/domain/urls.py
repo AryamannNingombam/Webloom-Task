@@ -5,5 +5,6 @@ from . import views
 
 
 urlpatterns = [
-    path('test/', views.test_api)
+    path('test/', views.test_api), 
+    path('filter-query/<str:text>',views.filter_for_query)
 ]

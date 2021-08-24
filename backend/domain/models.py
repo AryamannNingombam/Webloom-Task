@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 
 class DomainEnding(models.Model):
-    id = models.AutoField(primary_key=True)
+    sno = models.AutoField(primary_key=True)
     name = models.CharField(max_length=10,unique=True)
 
 
@@ -14,7 +14,7 @@ class DomainEnding(models.Model):
         return self.name
 
 class DomainSearched(models.Model):
-    id = models.AutoField(primary_key=True)
+    sno = models.AutoField(primary_key=True,auto_created=True)
     name = models.CharField(max_length=50, unique=True)
     searchers = models.ManyToManyField(User)
 
