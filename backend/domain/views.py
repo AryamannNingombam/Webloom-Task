@@ -92,11 +92,11 @@ def get_history_for_user(req):
 def filter_for_query(req, text):
     temp = text.split('.')[0]
     print(type(req.user))
-    # first_result = whois.whois(text)
+    first_result = whois.whois(text)
     suggestions = list(map(lambda x: temp + x, get_all_domain_endings_list()))
     add_user_to_domain_searched(text,req.user)
     return JsonResponse({
         'success': True,
         'all_suggestions': suggestions,
-        # 'result': first_result
+        'result': first_result
     })

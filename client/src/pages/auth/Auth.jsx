@@ -26,17 +26,7 @@ const Auth = () => {
         console.log(err)
       })
   }
-  const onButtonClick = () => {
-    domainInformation('kryptocards.net')
-      .then((response) => {
-          
-
-        
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
+ 
 
   return (
     <div className="auth-main-div">
@@ -48,6 +38,7 @@ const Auth = () => {
         }}
       />
       <FormControl
+      type="password"
         className="form-control-styling"
         placeholder="Password"
         onChange={(e) => {
@@ -57,9 +48,7 @@ const Auth = () => {
       <Button className="sign-in-button" onClick={onSignIn}>
         Sign-In
       </Button>
-      <Button className="sign-in-button" onClick={onButtonClick}>
-        Click
-      </Button>
+ 
     </div>
   )
 }
