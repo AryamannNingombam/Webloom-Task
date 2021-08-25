@@ -1,12 +1,12 @@
-from django.shortcuts import render
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
-from django.contrib.auth import login, logout, authenticate
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth import logout
 from .models import UserVerified
 from django.contrib.auth.models import User
 from .mailer import send_mail
 from .random_string import get_string
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import AllowAny
 from .serializers import MyCustomSerializer
 from rest_framework import permissions
 
@@ -25,12 +25,14 @@ def test_api(req):
 
 
 @api_view(['POST'])
+@permission_classes((AllowAny,))
 def sign_up_user(req):
     email = req.POST.get("email")
     username = req.POST.get('username')
     password = req.POST.get("password")
     first_name = req.POST.get("firstName")
     last_name = req.POST.get('lastName')
+    print(req.POST)
     check = User.objects.filter(email=email)
     check2 = User.objects.filter(username=username)
     if (len(check) != 0 or len(check2) != 0):
