@@ -51,7 +51,6 @@ def test_api(req):
 
 @api_view(["GET"])
 def check_user_history(req):
-
     check = DomainSearched.objects.filter(user=req.user)
     if (len(check) == 0):
         return JsonResponse({
@@ -68,8 +67,17 @@ def check_user_history(req):
 
 @api_view(['GET'])
 def get_history_for_user(req):
-    all_history = DomainSearched.objects.get(user=req.user)
-    serialized = DomainSearchedSerializer(all_history)
+    all_history = DomainSearched.objects.filter(user=req.user)
+    if (len(all_history) == 0):
+        return JsonResponse({
+            'success':True,
+            'history' : {
+                'searches' :'',
+                'sno' : '...',
+                'user' : 'user',
+            }
+        })
+    serialized = DomainSearchedSerializer(all_history[0])
     print(serialized.data)
 
     return JsonResponse({

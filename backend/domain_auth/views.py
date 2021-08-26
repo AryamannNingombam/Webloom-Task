@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth import logout
 from .models import UserVerified
@@ -44,14 +44,23 @@ def sign_up_user(req):
                    first_name=first_name,
                    last_name=last_name
                    )
+    try:
+        newUser.full_clean()
+    except Exception as e:
+        print(e)
+        return HttpResponse(status=500)
 
     newUser.save()
     rand_string = get_string()
     verified = UserVerified(user=newUser, verified=False,
                             verification_id=rand_string)
+    try:
+        verified.full_clean()
+    except Exception as e:
+        return HttpResponse(status=500)
     verified.save()
-    send_mail(email, 'https://localhost/api/auth/verify-mail/' +
-              rand_string + '/')
+    send_mail(email, 'http://localhost:8000/api/auth/verify-mail/' +
+              rand_string)
 
     return JsonResponse({
         'success': True,
@@ -67,10 +76,10 @@ def sign_out_user(req):
 
 
 @ api_view(['GET'])
-def verify_mail(req):
-    _id = req.params.get('id')
+@permission_classes((AllowAny,))
+def verify_mail(req, hash):
 
-    check = UserVerified.objects.filter(verification_id=_id)
+    check = UserVerified.objects.filter(verification_id=hash)
     if (len(check) == 0):
         return JsonResponse({
             'success': False,
@@ -90,7 +99,7 @@ def check_user_verified(req, username):
     user_check = User.objects.get(username=username)
     verified_check = UserVerified.objects.get(user=user_check)
     return JsonResponse({
-        'success': False,
+        'success': True,
         'verified': verified_check.verified
     })
 

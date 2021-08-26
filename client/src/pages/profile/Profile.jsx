@@ -2,13 +2,22 @@ import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { GetUserHistory, GetUserInformation } from '../../services/auth.service'
 import Loader from '../../components/Loader'
+import { store } from '../../app/store'
+import { logout } from '../../features/auth/auth.slice'
 import './Profile.scss'
+import { useNavigate } from 'react-router'
 const Profile = () => {
   const [loading, setLoading] = useState(true)
   const [userInformation, setUserInformation] = useState({})
   const [history, setHistory] = useState([])
-
+  const navigate = useNavigate()
   useEffect(() => {
+    const checkIfVerified = store.getState().auth
+    if (!checkIfVerified.verified) {
+      alert('Not verified!')
+      store.dispatch(logout())
+      navigate('/auth')
+    }
     GetUserInformation()
       .then((response) => response.data)
       .then((data) => {

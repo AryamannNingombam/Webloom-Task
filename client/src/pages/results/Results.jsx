@@ -3,16 +3,24 @@ import { useNavigate, useParams } from 'react-router'
 import { domainInformation } from '../../services/api.service'
 import './Results.scss'
 import Loader from '../../components/Loader'
+import { store } from '../../app/store'
+import { logout } from '../../features/auth/auth.slice'
+
 
 export const Results = () => {
-
   const [allSuggestions, setAllSuggestions] = useState([])
-  const [text,setText] = useState(useParams().text)
+  const [text, setText] = useState(useParams().text)
   const [mainSearch, setMainSearch] = useState({})
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
   useEffect(() => {
+    const checkIfVerified = store.getState().auth
+    if (!checkIfVerified.verified) {
+      alert('Not verified!')
+      store.dispatch(logout())
+      navigate('/auth');
+    }
     domainInformation(text)
       .then((response) => response.data)
       .then((data) => {
@@ -27,7 +35,6 @@ export const Results = () => {
         setAllSuggestions(temp)
         setMainSearch(data.result)
         setLoading(false)
-        
       })
       .catch((err) => {
         console.log('ERROR')
@@ -36,11 +43,9 @@ export const Results = () => {
   }, [text])
 
   const onURLClick = (newText) => {
-    setText(newText);
+    setText(newText)
     setLoading(true)
     navigate(`/results/${newText}`)
-
-    
   }
 
   return (

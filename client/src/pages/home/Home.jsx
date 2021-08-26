@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router'
 import { checkIfSignedIn } from '../../services/auth.service'
 import { Button, FormControl } from 'react-bootstrap'
 import './Home.scss'
-import { domainInformation } from '../../services/api.service'
+import {logout} from '../../features/auth/auth.slice';
+import { store } from '../../app/store'
 
 const Home = () => {
   const navigate = useNavigate()
@@ -13,6 +14,12 @@ const Home = () => {
   useEffect(() => {
     if (!checkIfSignedIn()) {
       alert('Not signed in!')
+      navigate('/auth')
+    }
+    const checkIfVerified = store.getState().auth;
+    if (!checkIfVerified.verified){
+      alert("Not verified!")
+      store.dispatch(logout());
       navigate('/auth')
     }
   }, [])
