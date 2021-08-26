@@ -5,5 +5,5 @@ from .models import DomainSearched
 class DomainSearchedSerializer(serializers.ModelSerializer):
     class Meta:
         model =DomainSearched 
-        fields = ['id','name','searchers']
+        fields = ['sno','user','searches']
 

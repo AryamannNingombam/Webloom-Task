@@ -15,9 +15,9 @@ export const checkIfSignedIn = () => {
 
 export const signUpUser = (body) => {
     console.log(body);
-    return axios.post(`${BACKEND_API}/api/auth/sign-up/`, body,{
-        headers : {
-            'Content-Type' : "application/json"
+    return axios.post(`${BACKEND_API}/api/auth/sign-up/`, body, {
+        headers: {
+            'Content-Type': "application/json"
         }
     });
 }
@@ -43,7 +43,46 @@ export const SignIn = (body) => {
     return axios.post(`${BACKEND_API}/api/auth/token/obtain/`, body, {
         headers: {
             'content-type': 'application/json',
-            'Accept':'application/json',
+            'Accept': 'application/json',
+        }
+    })
+}
+
+
+export const CheckUserSearchHistory = () => {
+    const token = store.getState().auth.token;
+    if (!token) {
+        throw new Error("Not authenticated!");
+    }
+    return axios.get(`${BACKEND_API}/api/domain/get-history-for-user/`, {
+        headers: {
+            "Authorization": `JWT ${token}`
+        }
+    })
+
+}
+
+export const GetUserInformation = () => {
+    const token = store.getState().auth.token;
+    if (!token) {
+        throw new Error("Not authenticated!");
+    }
+    return axios.get(`${BACKEND_API}/api/auth/get-user-information/`, {
+        headers: {
+            'Authorization': `JWT ${token}`
+        }
+    })
+}
+
+
+export const GetUserHistory = () => {
+    const token = store.getState().auth.token;
+    if (!token) {
+        throw new Error("Not authenticated!");
+    }
+    return axios.get(`${BACKEND_API}/api/domain/get-user-history/`, {
+        headers: {
+            'Authorization': `JWT ${token}`
         }
     })
 }

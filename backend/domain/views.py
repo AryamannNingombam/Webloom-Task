@@ -7,19 +7,20 @@ from .serializers import DomainSearchedSerializer
 import whois
 
 
+def add_domain_to_user_history(name, user):
+    history_check = DomainSearched.objects.filter(user=user)
+    # user has searched for the first time;
 
-
-def add_user_to_domain_searched(name, user):
-    domain_searched = DomainSearched.objects.filter(name=name)
-    # the first time the domain has been searched for;
-    if (len(domain_searched) == 0):
-        new_domain_searched = DomainSearched(name=name)
-        new_domain_searched.save()
-        new_domain_searched.searchers.add(user)
-        new_domain_searched.save()
+    if (len(history_check) == 0):
+        new_user_history = DomainSearched(user=user)
+        new_user_history.searches = f"{name},"
+        new_user_history.save()
+    # shit already exists;
     else:
-        domain_searched[0].searchers.add(user)
-        domain_searched[0].save()
+        updated_user_history = history_check[0]
+        updated_user_history.searches += f"{name},"
+        updated_user_history.save()
+    return
 
 
 def get_all_domain_endings_list():
@@ -49,42 +50,31 @@ def test_api(req):
 
 
 @api_view(["GET"])
-def check_domain_history(req):
-    domain = req.headers.domain
-    check = DomainSearched.objects.filter(name=domain)
-    return JsonResponse({
-        'success': True,
-        'empty': (len(check) == 0)
-    })
+def check_user_history(req):
 
-
-@api_view(['PUT', 'POST'])
-def add_history(req):
-    if (req.type == 'PUT'):
-        domain = req.PUT.domain
-        domain_check = DomainSearched.objects.get(name=domain)
-        domain_check.searchers.add(req.user)
-        domain_check.save()
-
+    check = DomainSearched.objects.filter(user=req.user)
+    if (len(check) == 0):
+        return JsonResponse({
+            'success': True,
+            'exists': False,
+        })
     else:
-        domain = req.POST.domain
-        domain_check = DomainSearched(name=domain)
-        domain_check.searchers.add(req.user)
-        domain_check.save()
-
-    return JsonResponse({
-        'success': True,
-    })
+        return JsonResponse({
+            'success': True,
+            'exists': False,
+            'user_history': check[0]
+        })
 
 
 @api_view(['GET'])
 def get_history_for_user(req):
-    all_history = DomainSearched.objects.get(searchers__icontains=req.user)
-    serialized = DomainSearchedSerializer(all_history, many=True)
+    all_history = DomainSearched.objects.get(user=req.user)
+    serialized = DomainSearchedSerializer(all_history)
+    print(serialized.data)
 
     return JsonResponse({
         'success': True,
-        'history': serialized
+        'history': serialized.data
     })
 
 
@@ -94,7 +84,7 @@ def filter_for_query(req, text):
     print(type(req.user))
     first_result = whois.whois(text)
     suggestions = list(map(lambda x: temp + x, get_all_domain_endings_list()))
-    add_user_to_domain_searched(text,req.user)
+    add_domain_to_user_history(text, req.user)
     return JsonResponse({
         'success': True,
         'all_suggestions': suggestions,

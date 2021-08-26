@@ -27,6 +27,7 @@ export const Results = () => {
         setAllSuggestions(temp)
         setMainSearch(data.result)
         setLoading(false)
+        
       })
       .catch((err) => {
         console.log('ERROR')

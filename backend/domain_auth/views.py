@@ -7,7 +7,7 @@ from .mailer import send_mail
 from .random_string import get_string
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import AllowAny
-from .serializers import MyCustomSerializer
+from .serializers import MyCustomSerializer, MyUserSerializer
 from rest_framework import permissions
 
 
@@ -92,4 +92,14 @@ def check_user_verified(req, username):
     return JsonResponse({
         'success': False,
         'verified': verified_check.verified
+    })
+
+
+@api_view(['GET'])
+def get_user_information(req):
+    result = MyUserSerializer(req.user)
+    print(result.data)
+    return JsonResponse({
+        'success': True,
+        'user_information': result.data
     })

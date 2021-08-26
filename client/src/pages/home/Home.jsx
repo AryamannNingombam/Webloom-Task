@@ -27,9 +27,13 @@ const Home = () => {
     navigate(`/results/${inputText}`)
   }
 
+  const onProfileClick = (e)=>{
+    e.preventDefault();
+    navigate('/profile')
+  }
   return (
     <div className="home-main-div">
-      <Button className="button">Profile</Button>
+      <Button onClick={onProfileClick} className="button">Profile</Button>
       <Button className="button" onClick={onSearchDomainDisplay}>
         Search Domain
       </Button>

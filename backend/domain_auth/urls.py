@@ -12,6 +12,7 @@ urlpatterns = [
     path('token/obtain/', jwt_views.TokenObtainPairView.as_view(),
          name='token_create'),  # override sjwt stock token
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
+    path('get-user-information/',views.get_user_information,name="get-user-information")
 
 
 

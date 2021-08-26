@@ -10,6 +10,8 @@ import { Results } from './pages/results/Results';
 
 const AuthLogin = lazy(()=>import('./pages/auth/Auth'));
 const Home = lazy(()=>import('./pages/home/Home'));
+const Profile = lazy(()=>import("./pages/profile/Profile"))
+
 
 function App() {
 
@@ -24,7 +26,9 @@ function App() {
   ]
   const authRoutes = [
     {path : '/home',element : <Home/>},
-    {path : "/results/:text",element : <Results/>}
+    {path : "/results/:text",element : <Results/>},
+    {path : "/profile",element : <Profile/>},
+    
 
   ]  
   
