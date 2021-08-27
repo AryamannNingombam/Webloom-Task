@@ -2,19 +2,24 @@ import smtplib
 import ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import environ
 
+
+env = environ.Env()
+environ.Env.read_env()
 
 port = 465  # For SSL
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # Create a secure SSL context
 context = ssl.create_default_context()
-sender_email = 'test.aryamann.ningombam@gmail.com'
-def send_mail(receiver_email,url):
+sender_email = env('EMAIL_EMAIL')
 
+
+def send_mail(receiver_email, url):
 
     with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-        server.login(sender_email, '15052002!!')
+        server.login(sender_email, env('EMAIL_PASSWORD'))
         message = MIMEMultipart("alternative")
         message["Subject"] = "multipart test"
         message["From"] = sender_email
