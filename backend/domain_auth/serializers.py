@@ -5,6 +5,7 @@ from rest_framework import serializers
 
 
 
+# just trying out something, ignore;
 class MyCustomSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls,user):

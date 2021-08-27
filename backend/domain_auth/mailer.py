@@ -5,6 +5,7 @@ from email.mime.multipart import MIMEMultipart
 import environ
 
 
+# getting the environment variables;
 env = environ.Env()
 environ.Env.read_env()
 
